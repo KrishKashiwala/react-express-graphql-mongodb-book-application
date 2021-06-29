@@ -2,7 +2,7 @@ const graphql = require('graphql')
 const Books = require('../models/books')
 const Authors = require('../models/author')
 const _ = require('lodash')
-const { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID } = graphql
+const { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLNonNull } = graphql
 
 // dummy data for books
 
@@ -113,15 +113,15 @@ const Mutation = new GraphQLObjectType({
 		addBook: {
 			type: BookType,
 			args: {
-				name: { type: GraphQLString },
-				genre: { type: GraphQLString },
-				authorId: { type: GraphQLID },
+				name: { type: new GraphQLNonNull(GraphQLString) },
+				genre: { type: new GraphQLNonNull(GraphQLString) },
+				authorId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
 				const newBook = new Books({
-					name: args.name,
-					genre: args.genre,
-					authorId: args.authorId
+					name: new GraphQLNonNull(args.name),
+					genre: new GraphQLNonNull(args.genre),
+					authorId: new GraphQLNonNull(args.authorId)
 				})
 				return newBook.save()
 			}
