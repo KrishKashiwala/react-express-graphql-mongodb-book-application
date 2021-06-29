@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config()
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema')
 const mongoose = require('mongoose')
@@ -6,15 +7,15 @@ const app = express();
 
 
 // connect mongodb database
-
-const db_string = 'mongodb+srv://krishkashiwala:krish5501@krishcluster.nclxl.mongodb.net/graphqlDatabase?retryWrites=true&w=majority'
-mongoose.connect(db_string, {
+mongoose.connect(process.env.DATABASE, {
 	useNewUrlParser: true,
 	useFindAndModify: true,
 	useUnifiedTopology: true
 }).then(() => {
 	console.log('connected to database');
-});
+}).catch(e => {
+	console.log(e)
+})
 
 
 // bind express with graphql
