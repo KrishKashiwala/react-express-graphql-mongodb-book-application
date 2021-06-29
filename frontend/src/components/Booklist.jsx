@@ -6,24 +6,15 @@ import {
 
 // graphql queries
 const getBooksQuery = gql`
-query{
+{
 	allBooks{
 		name
 		genre
 		
 	}
 	allAuthors{
-			name
-			age
-	}
-	
-}
-`
-const getAuthorsQuery = gql`
-query{
-	allAuthors{
-			name
-			age
+		name
+		age
 	}
 	
 }
@@ -33,14 +24,16 @@ query{
 const Booklist = () => {
 	
 	// handling graphql queries data
-	const {data} = useQuery(getBooksQuery)
+	const {data , loading , error} = useQuery(getBooksQuery)
+	if(loading) return <p>loading....</p>
+	if(error) return <p>Error :(</p>
 	return(
 		<div>
 			{
 				data.allBooks.map(datas => (
 					<ul>
 						<li key = {datas.name}>{datas.name}</li>
-						<li key = {datas.name}>{datas.genre}</li>
+						<li key = {datas.genre}>{datas.genre}</li>
 					</ul>
 				))
 			} 
@@ -48,7 +41,7 @@ const Booklist = () => {
 				data.allAuthors.map(datas => (
 					<ul>
 						<li key = {datas.name}>{datas.name}</li>
-						<li key = {datas.name}>{datas.age}</li>
+						<li key = {datas.age}>{datas.age}</li>
 					</ul>
 				))
 			}
