@@ -3,9 +3,9 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  gql
 } from '@apollo/client'
 import Booklist from './components/Booklist'
+import Addbook from './components/Addbook';
 
 // ............... APOLLO SETUP .............
 const client = new ApolloClient({
@@ -18,19 +18,6 @@ const client = new ApolloClient({
 
 })
 
-// fake queyr search to
-client
-  .query({
-    query: gql`
-      query GetRates {
-        rates(currency: "USD") {
-          currency
-        }
-      }
-    `
-  })
-  .then(result => console.log(result));
-
 
 const App = () => {
   return (
@@ -38,6 +25,7 @@ const App = () => {
       <div id="main">
         <h1> Krish Book List</h1>
         <Booklist />
+        <Addbook />
       </div>
     </ApolloProvider>
 
