@@ -91,13 +91,13 @@ const RootQuery = new GraphQLObjectType({
 		allBooks: {
 			type: GraphQLList(BookType),
 			resolve(parent, args) {
-				return Books.find({}).lean()
+				return Books.find({})
 			}
 		},
 		allAuthors: {
 			type: GraphQLList(AuthorType),
 			resolve(parent, args) {
-				return Authors.find({}).lean()
+				return Authors.find({})
 			}
 		}
 	}

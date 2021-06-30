@@ -1,38 +1,59 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { getAuthorsQuery, addBookMutation } from '../queries/queries';
+import { Formik, Form, Field } from 'formik';
 const Addbook = () => {
     const { data, error, loading } = useQuery(getAuthorsQuery);
-    const [addBooks] = useMutation(addBookMutation);
-
-    // states
-    const [name, setName] = useState('');
-    const [genre, setGenre] = useState('');
-    const [authorName, setAuthorName] = useState('');
-
+    const [addBook] = useMutation(addBookMutation);
+    console.log(addBook);
     if (loading) return <p>...loading</p>;
     if (error) return <p>error :(</p>;
+    console.log(data.allAuthors);
+
     return (
-        <form id="add-book">
-            <div className="field">
-                <label>Book name:</label>
-                <input type="text" onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="field">
-                <label>Genre:</label>
-                <input type="text" onChange={(e) => setGenre(e.target.value)} />
-            </div>
-            <div className="field">
-                <label>Author:</label>
-                <select onChange={(e) => setAuthorName(e.target.value)}>
-                    <option disabled>Select author</option>
-                    {data.allAuthors.map((author) => (
-                        <option value={author.id}>{author.name}</option>
-                    ))}
-                </select>
-            </div>
-            <button>+</button>
-        </form>
+        <Formik
+            initialValues={{
+                name: '',
+                genre: '',
+                authorName: ''
+            }}
+            onSubmit={(data, { setSubmitting }) => {
+                setSubmitting(true);
+                addBook({
+                    variables: {
+                        name: data.name,
+                        genre: data.genre,
+                        authorId: data.authorId
+                    }
+                });
+                console.log(data);
+                setSubmitting(false);
+            }}
+        >
+            {({ values, handleChange, isSubmitting }) => (
+                <Form>
+                    <Field type="input" name="name" />
+                    <Field type="input" name="genre" />
+                    <select
+                        name="authorName"
+                        onChange={handleChange}
+                        value={values.authorName}
+                    >
+                        {data.allAuthors.map((author) => (
+                            <option
+                                key={author.id}
+                                onChange={handleChange}
+                                value={author.name}
+                            >
+                                {author.name}
+                            </option>
+                        ))}
+                    </select>
+                    <button disabled={isSubmitting}>Submit</button>
+                    <button>+</button>
+                </Form>
+            )}
+        </Formik>
     );
 };
 export default Addbook;
