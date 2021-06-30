@@ -4,8 +4,12 @@ import { getAuthorsQuery, addBookMutation } from '../queries/queries';
 import { Formik, Form, Field } from 'formik';
 const Addbook = () => {
     const { data, error, loading } = useQuery(getAuthorsQuery);
-    const [addBook] = useMutation(addBookMutation);
-    console.log(addBook);
+    const [addBooks] = useMutation(addBookMutation);
+    console.log(addBooks);
+
+    let authorIdPost = '';
+    console.log('aurhot', authorIdPost);
+
     if (loading) return <p>...loading</p>;
     if (error) return <p>error :(</p>;
     console.log(data.allAuthors);
@@ -15,16 +19,17 @@ const Addbook = () => {
             initialValues={{
                 name: '',
                 genre: '',
-                authorName: ''
+                authorId: ''
             }}
             onSubmit={(data, { setSubmitting }) => {
                 setSubmitting(true);
-                addBook({
+                addBooks({
                     variables: {
                         name: data.name,
                         genre: data.genre,
                         authorId: data.authorId
-                    }
+                    },
+                    refetchQueries: { query: getAuthorsQuery }
                 });
                 console.log(data);
                 setSubmitting(false);
@@ -35,18 +40,16 @@ const Addbook = () => {
                     <Field type="input" name="name" />
                     <Field type="input" name="genre" />
                     <select
-                        name="authorName"
+                        name="authorId"
                         onChange={handleChange}
-                        value={values.authorName}
+                        value={values.authorId}
                     >
                         {data.allAuthors.map((author) => (
-                            <option
-                                key={author.id}
-                                onChange={handleChange}
-                                value={author.name}
-                            >
-                                {author.name}
-                            </option>
+                            <>
+                                <option key={author.id} onChange={handleChange}>
+                                    {author.name}
+                                </option>
+                            </>
                         ))}
                     </select>
                     <button disabled={isSubmitting}>Submit</button>

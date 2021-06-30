@@ -88,6 +88,14 @@ const RootQuery = new GraphQLObjectType({
 				return Authors.findById(args.id)
 			}
 		},
+		authorName: {
+			type: AuthorType,
+			args: { name: { type: GraphQLString } },
+			resolve(parent, args) {
+				return Authors.findOne({ name: args.name })
+
+			}
+		},
 		allBooks: {
 			type: GraphQLList(BookType),
 			resolve(parent, args) {
@@ -125,15 +133,15 @@ const Mutation = new GraphQLObjectType({
 		addBook: {
 			type: BookType,
 			args: {
-				name: { type: new GraphQLNonNull(GraphQLString) },
-				genre: { type: new GraphQLNonNull(GraphQLString) },
-				authorId: { type: new GraphQLNonNull(GraphQLID) },
+				name: { type: (GraphQLString) },
+				genre: { type: (GraphQLString) },
+				authorId: { type: (GraphQLString) },
 			},
 			resolve(parent, args) {
 				const newBook = new Books({
-					name: new GraphQLNonNull(args.name),
-					genre: new GraphQLNonNull(args.genre),
-					authorId: new GraphQLNonNull(args.authorId)
+					name: (args.name),
+					genre: (args.genre),
+					authorId: (args.authorId)
 				})
 				return newBook.save()
 			}
